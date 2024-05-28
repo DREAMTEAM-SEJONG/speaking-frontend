@@ -25,7 +25,7 @@ class _TalkingState extends State<Talking> {
       final roomId = _uuid.v4();
 
       await roomCollection.doc(roomId).set({
-        'room': roomId,
+        'room_id': roomId,
         'createdAt': Timestamp.now(),
       });
     }
@@ -51,8 +51,21 @@ class _TalkingState extends State<Talking> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       return Container(
-          color: Colors.grey.shade800,
-          child: Center(child: Text('Please log in to view the chat.')));
+        color: Colors.grey.shade900,
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0),
+              ),
+              color: Colors.grey.shade800,
+            ),
+            child: Center(
+                child: Text(
+              'Please log in to view the chat.',
+              style: TextStyle(color: Colors.white),
+            ))),
+      );
     }
 
     return FutureBuilder<int>(
@@ -65,7 +78,6 @@ class _TalkingState extends State<Talking> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
 
-        final int listCount = snapshot.data ?? 0;
 
         return ListView(
           physics: ClampingScrollPhysics(),

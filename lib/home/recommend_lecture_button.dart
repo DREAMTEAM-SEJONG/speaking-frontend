@@ -23,7 +23,9 @@ class LectureRecommendButton extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         }
-        final chatDocs = snapshot.data!.docs;
+        final chatDocs = snapshot.data!.docs.where((doc) {
+          return doc['level'] == level.index + 1;
+        }).toList();
 
         return GridView.count(
             crossAxisCount: 2,
@@ -31,15 +33,13 @@ class LectureRecommendButton extends StatelessWidget {
             shrinkWrap: true,
             childAspectRatio: 9 / 10,
             children: List.generate(chatDocs.length,
-                (index) => CardButton(context, index, chatDocs)));
+                    (index) => CardButton(context, index, chatDocs)));
       },
     );
   }
 }
 
-
-
-Widget CardButton(BuildContext context, int index, chatDocs) {
+Widget CardButton(BuildContext context, int index, List<DocumentSnapshot> chatDocs) {
   WebViewController controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setBackgroundColor(const Color(0x00000000))
@@ -60,6 +60,7 @@ Widget CardButton(BuildContext context, int index, chatDocs) {
       ),
     )
     ..loadRequest(Uri.parse(chatDocs[index]['link']));
+
   return TextButton(
       onPressed: () {
         Navigator.push(
@@ -93,34 +94,34 @@ Widget CardButton(BuildContext context, int index, chatDocs) {
                     ),
                     Positioned(
                         child: Opacity(
-                      opacity: 0.6,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 5 * 2,
-                        height: MediaQuery.of(context).size.height / 5 * 1,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.white10,
-                            Colors.white,
-                          ],
+                          opacity: 0.6,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 5 * 2,
+                            height: MediaQuery.of(context).size.height / 5 * 1,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.white10,
+                                    Colors.white,
+                                  ],
+                                )),
+                          ),
                         )),
-                      ),
-                    )),
                     Positioned(
                         child: Container(
-                      width: MediaQuery.of(context).size.width / 5 * 2,
-                      height: MediaQuery.of(context).size.height / 5 * 1,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [
-                            Colors.white.withOpacity(0.05),
-                            Colors.white.withOpacity(0.1)
-                          ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter)),
-                    )),
+                          width: MediaQuery.of(context).size.width / 5 * 2,
+                          height: MediaQuery.of(context).size.height / 5 * 1,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white.withOpacity(0.05),
+                                    Colors.white.withOpacity(0.1)
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
+                        )),
                     Positioned(
                         top: 140,
                         left: 10,
@@ -128,10 +129,10 @@ Widget CardButton(BuildContext context, int index, chatDocs) {
                           chatDocs[index]['level'] == 1
                               ? '초급'
                               : chatDocs[index]['level'] == 2
-                                  ? '중급'
-                                  : chatDocs[index]['level'] == 3
-                                      ? '고급'
-                                      : '기타',
+                              ? '중급'
+                              : chatDocs[index]['level'] == 3
+                              ? '고급'
+                              : '기타',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

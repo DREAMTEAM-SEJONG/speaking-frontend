@@ -37,6 +37,7 @@ class _NewTalkingState extends State<NewTalking> {
 
       CollectionReference messagesCollection = roomDoc.collection('message');
       await messagesCollection.add({
+        'user_id': user.uid,
         'time': Timestamp.now(),
         'comment': _lastWords,
         'language': 1,
