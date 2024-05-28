@@ -7,12 +7,13 @@ class ChatBubbleLecture extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Row(
       mainAxisAlignment:  MainAxisAlignment.center,
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.grey[800],
+            color: Colors.grey[900],
             borderRadius: BorderRadius.circular(12)
           ),
           width: MediaQuery.of(context).size.width/10*9,

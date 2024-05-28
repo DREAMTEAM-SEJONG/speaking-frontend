@@ -19,7 +19,7 @@ class TalkingButton extends StatelessWidget {
     final userDoc = FirebaseFirestore.instance.collection('chat').doc(user.uid);
 
     return StreamBuilder(
-      stream: userDoc.collection('rooms').snapshots(),
+      stream: userDoc.collection('rooms').orderBy('createdAt',descending: true).snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -45,7 +45,7 @@ class TalkingButton extends StatelessWidget {
           ),
           itemBuilder: (BuildContext context, int index) {
             final roomId = chatDocs[index].id;
-            final roomNumber = chatDocs[index]['room'];
+            final roomNumber = chatDocs[index]['room_id'];
             final time = chatDocs[index]['createdAt'];
             return CardButton(
               context: context,
@@ -70,7 +70,7 @@ Widget CardButton({
 }) {
   String formatDate(String dateString) {
     DateTime dateTime = DateTime.parse(dateString);
-    String formattedDateString = DateFormat('MM.dd.hh.mm').format(dateTime);
+    String formattedDateString = DateFormat('MM/dd hh:mm').format(dateTime);
     return formattedDateString;
   }
   return TextButton(
