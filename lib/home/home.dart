@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mal_hae_bol_le/home/recommend_lecture_button.dart';
 import 'package:mal_hae_bol_le/lecture/lecture_button.dart';
 enum MenuType { easy, normal, hard }
@@ -25,12 +26,12 @@ class _LectureRecommendState extends State<LectureRecommend> {
         Container(
           color: Colors.grey[900],
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
-              color: Colors.blueGrey,
+              color: Colors.grey.shade800,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +61,7 @@ class _LectureRecommendState extends State<LectureRecommend> {
                   ),
                 ),
                 LectureRecommendButton(_selection),
+                Container(color: Colors.grey.shade800,width: context.mediaQuerySize.width,height: context.mediaQuerySize.height,)
               ],
             ),
           ),

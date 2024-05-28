@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
@@ -11,6 +12,8 @@ import 'package:mal_hae_bol_le/home/home.dart';
 import 'package:mal_hae_bol_le/lecture/lecture.dart';
 import 'package:mal_hae_bol_le/login/sign_in.dart';
 import 'package:mal_hae_bol_le/talking/talking.dart';
+
+import 'login/profile.dart';
 
 Future main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +55,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +72,7 @@ class _MainPageState extends State<MainPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignIn()),
+                        MaterialPageRoute(builder: (context) => user == null ? SignIn() : Profile()),
                       );
                     },
                     icon: Icon(Icons.account_box_rounded),

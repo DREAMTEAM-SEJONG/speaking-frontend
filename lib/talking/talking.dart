@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mal_hae_bol_le/talking/talking_button.dart';
 import 'package:uuid/uuid.dart';
 
@@ -17,7 +18,8 @@ class _TalkingState extends State<Talking> {
   Future<void> _newRoom() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('chat').doc(user.uid);
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('chat').doc(user.uid);
       CollectionReference roomCollection = userDoc.collection('rooms');
 
       final roomId = _uuid.v4();
@@ -48,7 +50,9 @@ class _TalkingState extends State<Talking> {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
-      return Center(child: Text('Please log in to view the chat.'));
+      return Container(
+          color: Colors.grey.shade800,
+          child: Center(child: Text('Please log in to view the chat.')));
     }
 
     return FutureBuilder<int>(
@@ -69,12 +73,12 @@ class _TalkingState extends State<Talking> {
             Container(
               color: Colors.grey[900],
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),
                     topRight: Radius.circular(20.0),
                   ),
-                  color: Colors.blueGrey,
+                  color: Colors.grey.shade800,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +100,8 @@ class _TalkingState extends State<Talking> {
                             setState(() {});
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error creating room: $e')),
+                              SnackBar(
+                                  content: Text('Error creating room: $e')),
                             );
                           }
                         },
@@ -108,6 +113,11 @@ class _TalkingState extends State<Talking> {
                         setState(() {});
                       },
                     ),
+                    Container(
+                      color: Colors.grey.shade800,
+                      width: context.mediaQuerySize.width,
+                      height: context.mediaQuerySize.height,
+                    )
                   ],
                 ),
               ),
