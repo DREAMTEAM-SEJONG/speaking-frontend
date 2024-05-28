@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mal_hae_bol_le/lecture/lecture_button.dart';
 
 //강의요약
@@ -14,12 +15,12 @@ class Lecture extends StatelessWidget {
         Container(
           color: Colors.grey[900],
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0),
               ),
-              color: Colors.blueGrey,
+              color: Colors.grey.shade800,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,6 +33,7 @@ class Lecture extends StatelessWidget {
                   ),
                 ),
                 LectureButton(),
+                Container(color: Colors.grey.shade800,width: context.mediaQuerySize.width,height: context.mediaQuerySize.height,)
               ],
             ),
           ),
