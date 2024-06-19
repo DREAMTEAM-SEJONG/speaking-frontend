@@ -1,4 +1,4 @@
-package com.example.mal_hae_bol_le
+package com.example.malhaebolle
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -79,62 +80,74 @@ class _TalkingState extends State<Talking> {
         }
 
 
-        return ListView(
-          physics: ClampingScrollPhysics(),
-          children: [
-            Container(
-              color: Colors.grey[900],
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20.0),
-                    topRight: Radius.circular(20.0),
+        return Scaffold(
+          backgroundColor: Colors.grey[800],
+          body: ListView(
+            physics: ClampingScrollPhysics(),
+            children: [
+              Container(
+                color: Colors.grey[900],
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0),
+                    ),
+                    color: Colors.grey.shade800,
                   ),
-                  color: Colors.grey.shade800,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ListTile(
-                      title: Text(
-                        'Histories',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(
+                          'Histories',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () async {
-                          try {
-                            await _newRoom();
-                            setState(() {});
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text('Error creating room: $e')),
-                            );
-                          }
-                        },
-                        color: Colors.white,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              try {
+                                await _newRoom();
+                                setState(() {});
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text('Error creating room: $e')),
+                                );
+                              }
+                            },
+                            child: DottedBorder(
+                              padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.sizeOf(context).width/10*4),
+                              borderType: BorderType.RRect,
+                              color: Colors.white,
+                              dashPattern: [10,5],
+                              radius: Radius.circular(20),
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    TalkingButton(
-                      onUpdate: () {
-                        setState(() {});
-                      },
-                    ),
-                    Container(
-                      color: Colors.grey.shade800,
-                      width: context.mediaQuerySize.width,
-                      height: context.mediaQuerySize.height,
-                    )
-                  ],
+                      TalkingButton(
+                        onUpdate: () {
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

@@ -18,8 +18,12 @@ class _LectureScreenState extends State<LectureScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Lecture Translate'),
+          title: Text(
+            'Lecture Translate',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.grey[900],
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: Container(
           color: Colors.grey[800],
