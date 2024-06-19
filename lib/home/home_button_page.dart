@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:mal_hae_bol_le/talking/chat_screen.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import '../lecture/lecture.dart';
 import '../main.dart';
 import 'home.dart';
 
-class LectureRecommendButton extends StatelessWidget {
-  LectureRecommendButton(this.level, {super.key});
+class LectureButtonPage extends StatelessWidget {
+  LectureButtonPage(this.level, {super.key});
 
   late MenuType level;
 
@@ -31,7 +32,7 @@ class LectureRecommendButton extends StatelessWidget {
             crossAxisCount: 2,
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            childAspectRatio: 9 / 10,
+            childAspectRatio: 4 / 5,
             children: List.generate(chatDocs.length,
                     (index) => CardButton(context, index, chatDocs)));
       },
@@ -52,14 +53,12 @@ Widget CardButton(BuildContext context, int index, List<DocumentSnapshot> chatDo
         onPageFinished: (String url) {},
         onWebResourceError: (WebResourceError error) {},
         onNavigationRequest: (NavigationRequest request) {
-          if (request.url.startsWith('https://www.youtube.com/')) {
-            return NavigationDecision.prevent;
-          }
           return NavigationDecision.navigate;
         },
       ),
     )
     ..loadRequest(Uri.parse(chatDocs[index]['link']));
+
 
   return TextButton(
       onPressed: () {

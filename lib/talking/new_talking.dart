@@ -21,12 +21,13 @@ class _NewTalkingState extends State<NewTalking> {
   Future<void> _sendMessage() async {
     FocusScope.of(context).unfocus();
 
+
     final user = FirebaseAuth.instance.currentUser;
     if (_lastWords != '' && user != null) {
       DocumentReference userDoc =
-      FirebaseFirestore.instance.collection('chat').doc(user.uid);
+          FirebaseFirestore.instance.collection('chat').doc(user.uid);
       DocumentReference roomDoc =
-      userDoc.collection('rooms').doc(widget.roomNumber.toString());
+          userDoc.collection('rooms').doc(widget.roomNumber.toString());
 
       final docSnapshot = await roomDoc.get();
       if (!docSnapshot.exists) {
@@ -43,6 +44,15 @@ class _NewTalkingState extends State<NewTalking> {
         'language': 1,
         'split': 1,
       });
+
+      // split이 4인 메시지를 삭제
+      QuerySnapshot split4Messages = await roomDoc
+          .collection('message')
+          .where('split', isEqualTo: 4)
+          .get();
+      for (QueryDocumentSnapshot doc in split4Messages.docs) {
+        await doc.reference.delete();
+      }
 
       // 메시지를 보낸 후 _lastWords를 초기화
       setState(() {
@@ -67,6 +77,7 @@ class _NewTalkingState extends State<NewTalking> {
       onResult: _onSpeechResult,
       listenFor: Duration(seconds: 30),
       pauseFor: Duration(seconds: 5),
+      localeId: 'ko_KR',
     );
 
     setState(() {});
@@ -74,7 +85,9 @@ class _NewTalkingState extends State<NewTalking> {
 
   void _stopListening() async {
     await _speechToText.stop();
-    setState(() {_sendMessage();});
+    setState(() {
+      _sendMessage();
+    });
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
@@ -94,35 +107,33 @@ class _NewTalkingState extends State<NewTalking> {
       margin: EdgeInsets.only(top: 8),
       padding: EdgeInsets.all(8),
       child: Column(children: [
-        Container(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'Recognized words:',
-            style: TextStyle(fontSize: 20.0, color: Colors.white),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            _speechToText.isListening
-                ? '$_lastWords'
-                : _speechEnabled
-                ? 'Tap to speak...'
-                : 'Speech not available',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          IconButton(
-            onPressed: _speechToText.isNotListening ? _startListening : _stopListening,
-            tooltip: '듣기',
-            icon: Icon(
-              _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
-              size: 30,
-              color: Colors.white,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(50),
+              ),
+              color: Colors.black,
+            ),
+            width: 70,
+            height: 70,
+            child: IconButton(
+              padding: EdgeInsets.all(0),
+              onPressed: _speechToText.isNotListening
+                  ? _startListening
+                  : _stopListening,
+              tooltip: '듣기',
+              icon: Icon(
+                _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
+                size: 50,
+                color: Colors.white,
+              ),
             ),
           )
         ]),
+        SizedBox(
+          height: 50,
+        ),
       ]),
     );
   }

@@ -24,6 +24,7 @@ class _RecordState extends State<Record> {
   Future<void> _sendMessage() async {
     FocusScope.of(context).unfocus();
 
+
     final user = FirebaseAuth.instance.currentUser;
     if (_lastWords != '' && user != null) {
       DocumentReference userDoc =
@@ -121,42 +122,47 @@ class _RecordState extends State<Record> {
       padding: EdgeInsets.all(8),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Recognized words:',
-              style: TextStyle(fontSize: 20.0, color: Colors.white),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              _speechToText.isListening
-                  ? '$_lastWords'
-                  : _speechEnabled
-                  ? 'Tap to speak...'
-                  : 'Speech not available',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                _formatTimer(_timerSeconds),
-                style: TextStyle(fontSize: 24.0, color: Colors.white),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  _formatTimer(_timerSeconds),
+                  style: TextStyle(fontSize: 24.0, color: Colors.grey.shade800),
+                ),
               ),
-              IconButton(
-                onPressed:
-                _speechToText.isNotListening ? _startListening : _stopListening,
-                tooltip: '듣기',
-                icon: Icon(
-                  _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
-                  size: 30,
-                  color: Colors.white,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(50),
+                  ),
+                  color: Colors.black,
+                ),
+                width: 70,
+                height: 70,
+                child: IconButton(
+                  onPressed:
+                  _speechToText.isNotListening ? _startListening : _stopListening,
+                  tooltip: '듣기',
+                  icon: Icon(
+                    _speechToText.isNotListening ? Icons.mic : Icons.mic_off,
+                    size: 50,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  _formatTimer(_timerSeconds),
+                  style: TextStyle(fontSize: 24.0, color: Colors.white),
                 ),
               ),
             ],
+          ),
+          SizedBox(
+            height: 50,
           ),
         ],
       ),

@@ -52,7 +52,7 @@ class EachTalking extends StatelessWidget {
           itemBuilder: (context, index) {
             return ChatBubble(
               chatDocs[index]['comment'],
-              chatDocs[index]['split'] == 1,
+              chatDocs[index]['split'],
             );
           },
         );

@@ -19,8 +19,12 @@ class TalkingButton extends StatelessWidget {
     final userDoc = FirebaseFirestore.instance.collection('chat').doc(user.uid);
 
     return StreamBuilder(
-      stream: userDoc.collection('rooms').orderBy('createdAt',descending: true).snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+      stream: userDoc
+          .collection('rooms')
+          .orderBy('createdAt', descending: true)
+          .snapshots(),
+      builder: (context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(),
@@ -33,16 +37,10 @@ class TalkingButton extends StatelessWidget {
 
         final chatDocs = snapshot.data!.docs;
 
-        return GridView.builder(
+        return ListView.builder(
           itemCount: chatDocs.length,
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 9 / 10,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-          ),
           itemBuilder: (BuildContext context, int index) {
             final roomId = chatDocs[index].id;
             final roomNumber = chatDocs[index]['room_id'];
@@ -73,8 +71,9 @@ Widget CardButton({
     String formattedDateString = DateFormat('MM/dd hh:mm').format(dateTime);
     return formattedDateString;
   }
-  return TextButton(
-    onPressed: () {
+
+  return GestureDetector(
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -83,104 +82,72 @@ Widget CardButton({
       );
     },
     child: Container(
-      width: 170,
-      child: Column(
-        children: [
-          Material(
-            elevation: 5,
-            borderRadius: BorderRadius.circular(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                child: Stack(
-                  children: [
-                    Positioned(
-                      child: Image.network(
-                        'https://static.vecteezy.com/system/resources/previews/005/337/802/non_2x/icon-symbol-chat-outline-illustration-free-vector.jpg',
-                        width: MediaQuery.of(context).size.width / 5 * 2,
-                        height: MediaQuery.of(context).size.height / 5 * 1,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      child: Opacity(
-                        opacity: 0.6,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 5 * 2,
-                          height: MediaQuery.of(context).size.height / 5 * 1,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.white10,
-                                Colors.white,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 5 * 2,
-                        height: MediaQuery.of(context).size.height / 5 * 1,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.white.withOpacity(0.05),
-                              Colors.white.withOpacity(0.1),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Positioned(
-                      top: 120,
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () async {
-                          final user = FirebaseAuth.instance.currentUser;
-                          if (user != null) {
-                            DocumentReference roomDoc = FirebaseFirestore.instance
-                                .collection('chat')
-                                .doc(user.uid)
-                                .collection('rooms')
-                                .doc(roomId);
-                            await roomDoc.delete();
-                            onDelete(); // Update state after deletion
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Colors.grey[850],
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            offset: Offset(0, 2),
+            blurRadius: 6,
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(15),
+        leading: Container(
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [Colors.black26, Colors.grey],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-              formatDate(time.toDate().toString()),
-
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(0, 2),
+                blurRadius: 6,
               ),
             ],
           ),
-        ],
+          child: CircleAvatar(
+            radius: 25,
+            backgroundImage: NetworkImage(
+                'https://static.vecteezy.com/system/resources/previews/005/337/802/non_2x/icon-symbol-chat-outline-illustration-free-vector.jpg'),
+          ),
+        ),
+        title: Text(
+          'Room',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          formatDate(time.toDate().toString()),
+          style: TextStyle(
+            color: Colors.grey[400],
+          ),
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.delete, color: Colors.redAccent),
+          onPressed: () async {
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              DocumentReference roomDoc = FirebaseFirestore.instance
+                  .collection('chat')
+                  .doc(user.uid)
+                  .collection('rooms')
+                  .doc(roomId);
+              await roomDoc.delete();
+              onDelete(); // Update state after deletion
+            }
+          },
+        ),
       ),
     ),
   );

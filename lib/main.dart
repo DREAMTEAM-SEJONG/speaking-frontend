@@ -31,7 +31,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
@@ -56,71 +55,72 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final user = FirebaseAuth.instance.currentUser;
+  int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    LectureRecommend(),
+    Talking(),
+    Lecture(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(clipBehavior: Clip.none, children: [
-        Positioned(
-          child: DefaultTabController(
-            length: 3,
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0.0,
-                centerTitle: false,
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => user == null ? SignIn() : Profile()),
-                      );
-                    },
-                    icon: Icon(Icons.account_box_rounded),
-                    color: Colors.white,
-                  ),
-                ],
-                leading: Container(
-                  padding: EdgeInsets.all(10),
-                  child: Image.asset('assets/logo.png')
-                ),
-                title: const Text(
-                  '말해볼래',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                backgroundColor: Colors.grey[900],
-                bottom: const TabBar(
-                  isScrollable: true,
-                  indicatorWeight: 2.0,
-                  indicatorColor: Colors.white,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  // labelPadding: EdgeInsets.all(6),
-                  padding: EdgeInsets.all(3),
-                  tabs: [
-                    Text(
-                      'Home',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Talking',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      'Lecture',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-              body: TabBarView(
-                children: [LectureRecommend(), Talking(), Lecture()],
-              ),
-            ),
+      appBar: AppBar(
+        elevation: 0.0,
+        centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => user == null ? SignIn() : Profile()),
+              );
+            },
+            icon: Icon(Icons.account_box_rounded),
+            color: Colors.white,
           ),
+        ],
+        leading: Image.asset(
+          'assets/logo.png',
+          width: 10,
+          height: 10,
         ),
-      ]),
+        title: const Text(
+          '말해볼래',
+          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+        ),
+        backgroundColor: Colors.grey[900],
+      ),
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.grey[900],
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat),
+            label: 'Talking',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'Lecture',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+      ),
     );
   }
 }
